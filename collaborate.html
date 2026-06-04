@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TDS Water Quality Calculator</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            /* background-color:seagreen; */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            /* background-image: linear-gradient(to top, seagreen,seagreen); */
+            background-image: url(image1.jpg);
+            overflow: hidden;
+        }
+
+        .container {
+            /* background-color: white; */
+            background-color: #333;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+            animation: fadeIn 2s ease-out;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        input[type="number"] {
+            padding: 12px;
+            width: 85%;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border 0.3s ease;
+        }
+
+        input[type="number"]:focus {
+            border: 2px solid #4CAF50;
+        }
+
+        button {
+            padding: 12px 25px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.5s;
+        }
+
+        .healthy {
+            color: green;
+        }
+
+        .contaminated {
+            color: red;
+        }
+
+        .warning {
+            color: orange;
+        }
+
+        .scale {
+            margin-top: 20px;
+            width: 100%;
+            height: 15px;
+            background-color: #f1f1f1;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scale-bar {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1s ease-in-out;
+        }
+
+        .excellent { background-color: #4CAF50; }
+        .good { background-color: #8BC34A; }
+        .fair { background-color: #FFEB3B; }
+        .poor { background-color: #FF5722; }
+        .unacceptable { background-color: #F44336; }
+
+        .chemical-info {
+            margin-top: 15px;
+            text-align: left;
+            font-size: 14px;
+            color: #555;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1.5s;
+        }
+
+        .bacteria-info {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #333;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: none;
+            animation: fadeIn 2s forwards;
+        }
+
+        .bacteria-info ul {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+
+        .bacteria-info ul li {
+            margin-bottom: 5px;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            0% {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2 style="color: white;">TDS Water Quality Checker</h2>
+        <p style="color: white;">Enter the TDS value (in ppm):</p>
+        <input type="number" id="tdsValue" placeholder="TDS Value" required style="width: 370px;">
+        <button onclick="checkWaterQuality()" style="color: black; font-family: Arial, Helvetica, sans-serif; font-weight: 500; width: 400px; font-size: 1.2rem;">Check Quality</button>
+        
+        <div id="result" class="result" style="border-radius: 10px;"></div>
+        <div id="graph" class="scale">
+            <div id="scaleBar" class="scale-bar"></div>
+        </div>
+        <div id="chemicalInfo" class="chemical-info" style="font-size: 1rem; color: white;"></div>
+        <div id="bacteriaInfo" class="bacteria-info">
+            <h3 style="font-size: 1.3rem;">Bacteria and Contaminants <br> in Contaminated Water</h3>
+            <ul id="bacteriaList" style="font-size: 1rem;"></ul>
+        </div>
+    </div>
+
+    <script>
+        function checkWaterQuality() {
+            var tds = document.getElementById('tdsValue').value;
+            var resultDiv = document.getElementById('result');
+            var scaleBar = document.getElementById('scaleBar');
+            var chemicalInfo = document.getElementById('chemicalInfo');
+            var bacteriaInfo = document.getElementById('bacteriaInfo');
+            var bacteriaList = document.getElementById('bacteriaList');
+
+            // Clear previous results
+            resultDiv.innerHTML = '';
+            chemicalInfo.innerHTML = '';
+            scaleBar.style.width = '0%';
+            bacteriaInfo.style.display = 'none';
+            bacteriaList.innerHTML = '';
+
+            if (tds === '') {
+                resultDiv.innerHTML = 'Please enter a TDS value.';
+                resultDiv.classList.remove('healthy', 'contaminated', 'warning');
+                return;
+            }
+
+            tds = parseInt(tds);
+
+            if (tds < 0) {
+                resultDiv.innerHTML = 'TDS value cannot be negative.';
+                return;
+            }
+
+            var quality = '';
+            var colorClass = '';
+            var drinkingDays = '';
+            var chemicals = '';
+            var bacteria = [];
+
+            // Assigning TDS value ranges and corresponding water quality info
+            if (tds < 300) {
+                quality = 'Excellent';
+                colorClass = 'excellent';
+                drinkingDays = 'Safe for drinking indefinitely.';
+                chemicals = 'No harmful chemicals detected.';
+            } else if (tds >= 300 && tds <= 600) {
+                quality = 'Good';
+                colorClass = 'good';
+                drinkingDays = 'Safe for drinking up to 2 weeks.';
+                chemicals = 'Mild presence of minerals <br>  like calcium and magnesium.';
+            } else if (tds > 600 && tds <= 900) {
+                quality = 'Fair';
+                colorClass = 'fair';
+                drinkingDays = 'Safe for drinking up to 1 week.';
+                chemicals = 'Possible presence of sodium, <br>chloride, <br> some microorganisms.';
+                bacteria = ['Escherichia coli (E. coli)', 'Salmonella', 'Enterococci'];
+            } else if (tds > 900 && tds <= 1200) {
+                quality = 'Poor';
+                colorClass = 'poor';
+                drinkingDays = 'Not recommended for drinking. <br>  Risk of contamination.';
+                chemicals = 'Presence of nitrates, <br>  sulfates, <br> possible bacteria <br> such as E. coli.';
+                bacteria = ['Shigella', 'Vibrio cholerae', 'Salmonella'];
+            } else {
+                quality = 'Unacceptable';
+                colorClass = 'unacceptable';
+                drinkingDays = 'Do not drink. High risk of health issues.';
+                chemicals = 'High levels of heavy metals like : <br> lead,  <br> mercury,  <br> harmful bacteria - Such as Salmonella.';
+                bacteria = ['Clostridium botulinum', 'Salmonella', 'Legionella'];
+            }
+
+            // Update Result
+            resultDiv.innerHTML = quality + ' Water';
+            resultDiv.className = 'result ' + colorClass;
+
+            // Update Drinking Days
+            resultDiv.innerHTML += '<br>' + drinkingDays;
+
+            // Update Graph
+            var width = (tds / 1200) * 100; // Calculate width of scale bar based on TDS value
+            scaleBar.style.width = width + '%';
+
+            // Display Contamination Information
+            chemicalInfo.innerHTML = '<strong>Potential Contaminants:</strong><br>' + chemicals;
+
+            // Display Bacteria Information
+            if (bacteria.length > 0) {
+                bacteriaInfo.style.display = 'block';
+                bacteria.forEach(function(bacteriaType) {
+                    var li = document.createElement('li');
+                    li.textContent = bacteriaType;
+                    bacteriaList.appendChild(li);
+                });
+            }
+        }
+    </script>
+
+</body>
+</html>

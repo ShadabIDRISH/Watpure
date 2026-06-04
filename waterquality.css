@@ -1,0 +1,188 @@
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Background and Body */
+body, html {
+    height: 100%;
+    background-image: url('wallpapersden.com_white-snowy-lake_1920x1080.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #004d40;
+    /* overflow: hidden; */
+}
+
+/* Calculator Body */
+.calculator-body {
+    background: linear-gradient(135deg, #214650, #100f15, #23534f);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    color: #ffffff;
+    animation: gradientShift 10s infinite alternate;
+    overflow: hidden;
+    transition: all 0.5s ease-in-out; /* Smooth transition for all properties */
+}
+
+/* Calculator Container Styling */
+.calculator-container {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 40px;
+    width: 100%;
+    max-width: 700px;
+    max-height: 100vh; /* Adjusted for scrollability */
+    border-radius: 15px;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.4);
+    text-align: center;
+    backdrop-filter: blur(10px);
+    animation: popIn 1s ease-out;
+    overflow-y: auto; /* Enables scrolling */
+    transition: transform 0.4s ease, opacity 0.4s ease; /* Transition for smooth animation */
+}
+
+/* Scrollbar Styling */
+.calculator-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.calculator-container::-webkit-scrollbar-thumb {
+    background: #004d40;
+    border-radius: 8px;
+}
+
+.calculator-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Calculator Title */
+.calculator-container h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #0f296e;
+    text-shadow: 0px 0px 8px rgba(0, 255, 174, 0.8);
+    transition: color 0.3s ease, text-shadow 0.3s ease; /* Transition for color change */
+}
+
+.calculator-container h1:hover {
+    color: #d1e0e0;
+    text-shadow: 0px 0px 12px rgba(0, 255, 174, 1);
+}
+
+/* Section Headers */
+.calculator-container h2 {
+    font-size: 1.5rem;
+    color: #c0f4f7;
+    margin-top: 20px;
+    text-shadow: 0px 0px 6px rgba(0, 255, 174, 0.6);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    padding-bottom: 8px;
+    transition: color 0.3s ease; /* Transition for color change */
+}
+
+.calculator-container h2:hover {
+    color: #d1e0e0;
+}
+
+/* Label Styling */
+.calculator-container label {
+    font-size: 1.1rem;
+    color: #c0f4f7;
+    margin-top: 15px;
+    display: block;
+    text-align: left;
+    transition: color 0.3s ease; /* Transition for color change */
+}
+
+.calculator-container label:hover {
+    color: #80cbc4;
+}
+
+/* Dropdown Styling */
+.calculator-container select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    border: 2px solid #1a362d;
+    border-radius: 8px;
+    background-color: rgba(40, 35, 35, 0.941);
+    color: #ffffff;
+    font-size: 1rem;
+    text-align: center;
+    outline: none;
+    transition: border 0.3s, background-color 0.3s; /* Transition for border and background */
+}
+
+/* Focused Dropdown */
+.calculator-container select:focus {
+    border: 2px solid #302a12;
+    background-color: rgba(60, 50, 50, 0.9); /* Darker background on focus */
+}
+
+/* Calculate Button */
+.calculator-container button {
+    background-color: #00796b;
+    color: #ffffff;
+    padding: 12px 20px;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.4s, transform 0.2s ease; /* Transition for hover effect */
+}
+
+.calculator-container button:hover {
+    background-color: #004d40;
+    transform: scale(1.05); /* Slightly scale up on hover */
+}
+
+/* Result Text */
+#result {
+    font-size: 1.2rem;
+    margin-top: 15px;
+    color: #450448;
+    font-weight: bold;
+    transition: color 0.3s ease; /* Transition for color change */
+}
+
+#result:hover {
+    color: #e91e63; /* Change color on hover */
+}
+
+/* Chart Container */
+#chartContainer {
+    margin-top: 30px;
+    height: 300px;
+    width: 100%;
+}
+
+/* Pop-in Animation for Container */
+@keyframes popIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Media Query for Smaller Screens */
+@media (max-width: 768px) {
+    .calculator-container {
+        width: 90%;
+    }
+
+    .calculator-container h1 {
+        font-size: 2rem;
+    }
+
+    .calculator-container label,
+    .calculator-container select,
+    .calculator-container button {
+        font-size: 1rem;
+    }
+}

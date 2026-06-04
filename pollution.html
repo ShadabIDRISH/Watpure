@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Pollution - WATPURE</title>
+    <link rel="stylesheet" href="sttyle.css">
+    <style>
+        /* Background Image for the Entire Page */
+        body {
+            background: url('beautiful-wallpaper-water-simulation_746565-165709.avif') no-repeat center center fixed;
+            background-size: cover;
+            color: #333;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Light Background for the Form */
+        .report-pollution form {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .report-section {
+            margin: 20px 0;
+        }
+
+        /* Report Display Section */
+        .submitted-reports {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .submitted-report {
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+        }
+
+        /* Success message */
+        #successMessage {
+            display: none;
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        /* Error message */
+        #errorMessage {
+            display: none;
+            background-color: #dc3545;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        /* Edit and Delete buttons */
+        .edit-btn, .delete-btn {
+            margin-left: 10px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="main-navbar">
+        <div class="logo">WATPURE</div>
+        <ul class="nav-links">
+            <li><a href="indexx.html">Home</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="service.html">Services</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="info.html">Info</a></li>
+        </ul>
+    </nav>
+
+    <!-- Report Pollution Section -->
+    <section class="report-pollution">
+        <div class="container">
+            <br>
+            <br>
+            <br>
+            <h1><u>Report Pollution in Your Area</u></h1>
+            <p>Please fill out the form below to report any pollution issues in your locality. Your input will help us create a cleaner environment.</p>
+            
+            <form id="pollutionForm">
+                <!-- Pollution Type -->
+                <label for="pollution-type">Type of Pollution:</label>
+                <select id="pollution-type" name="pollution_type" required>
+                    <option value="" disabled selected>Select Pollution Type</option>
+                    <option value="Air Pollution">Air Pollution</option>
+                    <option value="Water Pollution">Water Pollution</option>
+                    <option value="Noise Pollution">Noise Pollution</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <!-- Location -->
+                <label for="location">Locality/Area:</label>
+                <input type="text" id="location" name="location" placeholder="Enter your locality or area" required>
+
+                <!-- Condition Description -->
+                <label for="description">Describe the Condition:</label>
+                <textarea id="description" name="description" rows="5" placeholder="Provide details about the pollution issue"></textarea>
+
+                <!-- Upload Image -->
+                <label for="image-upload">Upload Images (Optional):</label>
+                <input type="file" id="image-upload" name="pollution_images" accept="image/*" multiple>
+
+                <!-- AQI Field (Only for Air Pollution) -->
+                <div id="aqi-container" style="display: none;">
+                    <label for="aqi">AQI (Air Quality Index):</label>
+                    <input type="number" id="aqi" name="aqi" placeholder="Enter the AQI in your locality">
+                </div>
+
+                <!-- Contact Information (Optional) -->
+                <label for="contact-info">Your Name (Optional):</label>
+                <input type="text" id="contact-info" name="contact_info" placeholder="Enter your name">
+
+                <!-- Submit Button -->
+                <button type="submit">Submit Report</button>
+            </form>
+
+            <!-- Success and Error Messages -->
+            <div id="successMessage">Your information has been shared with the admin!</div>
+            <div id="errorMessage">There was an issue with submitting your report. Please try again.</div>
+        </div>
+    </section>
+
+    <!-- Submitted Reports Section -->
+    <section class="submitted-reports">
+        <h2>Submitted Reports</h2>
+        <div id="reportsContainer"></div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 WATPURE. All rights reserved.</p>
+    </footer>
+
+    <!-- Include EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script>
+        // Initialize EmailJS with your public key
+        emailjs.init("Bl6Z4a6byFar_Rogt");
+
+        // Show AQI field only for Air Pollution
+        const pollutionTypeSelect = document.getElementById('pollution-type');
+        const aqiContainer = document.getElementById('aqi-container');
+
+        pollutionTypeSelect.addEventListener('change', () => {
+            if (pollutionTypeSelect.value === 'Air Pollution') {
+                aqiContainer.style.display = 'block';
+            } else {
+                aqiContainer.style.display = 'none';
+            }
+        });
+
+        // Get reports from localStorage
+        function getReports() {
+            const reports = JSON.parse(localStorage.getItem('reports')) || [];
+            return reports;
+        }
+
+        // Save reports to localStorage
+        function saveReports(reports) {
+            localStorage.setItem('reports', JSON.stringify(reports));
+        }
+
+        // Render reports
+        function renderReports() {
+            const reportsContainer = document.getElementById('reportsContainer');
+            const reports = getReports();
+            reportsContainer.innerHTML = ''; // Clear current reports
+
+            reports.forEach((report, index) => {
+                const newReport = document.createElement('div');
+                newReport.classList.add('submitted-report');
+                newReport.innerHTML = `
+                    <p><strong>Reported by:</strong> ${report.name}</p>
+                    <p><strong>Type of Pollution:</strong> ${report.pollution_type}</p>
+                    <p><strong>Location:</strong> ${report.location}</p>
+                    <p><strong>Condition Description:</strong> ${report.description}</p>
+                    <p><strong>AQI:</strong> ${report.aqi}</p>
+                    <p><strong>Reported On:</strong> ${report.timestamp}</p>
+                    <button class="edit-btn" data-index="${index}">Edit</button>
+                    <button class="delete-btn" data-index="${index}">Issue Resolved</button>
+                `;
+                reportsContainer.appendChild(newReport);
+            });
+
+            // Add event listeners for edit and delete buttons
+            document.querySelectorAll('.edit-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = this.getAttribute('data-index');
+                    editReport(index);
+                });
+            });
+
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = this.getAttribute('data-index');
+                    deleteReport(index);
+                });
+            });
+        }
+
+        // Edit the report
+        function editReport(index) {
+            const reports = getReports();
+            const report = reports[index];
+
+            // Pre-fill the form with the report data
+            document.getElementById('pollution-type').value = report.pollution_type;
+            document.getElementById('location').value = report.location;
+            document.getElementById('description').value = report.description;
+            document.getElementById('aqi').value = report.aqi;
+            document.getElementById('contact-info').value = report.name;
+
+            // Remove the report from the array
+            reports.splice(index, 1);
+            saveReports(reports);
+
+            // Re-render the reports
+            renderReports();
+        }
+
+        // Delete the report (issue resolved)
+        function deleteReport(index) {
+            const reports = getReports();
+            reports.splice(index, 1); // Remove the report from the array
+            saveReports(reports); // Save updated reports
+            renderReports(); // Re-render the reports
+        }
+
+        // Handle form submission
+        document.getElementById('pollutionForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent the form from reloading the page
+
+            // Get form values
+            const pollutionType = document.getElementById('pollution-type').value;
+            const location = document.getElementById('location').value;
+            const description = document.getElementById('description').value;
+            const name = document.getElementById('contact-info').value || "Anonymous";
+            const timestamp = new Date().toLocaleString();
+            const aqi = document.getElementById('aqi').value || 'N/A';
+
+            // Create an object with the form data
+            const emailParams = {
+                pollution_type: pollutionType,
+                location: location,
+                description: description,
+                aqi: pollutionType === 'Air Pollution' ? aqi : 'N/A',
+                from_name: name,
+                submitted_at: timestamp
+            };
+
+            // Send the email using EmailJS
+            emailjs.send("service_0a73v5x", "template_3b2t67y", emailParams)
+                .then((response) => {
+                    console.log('Success:', response);
+                    // Show success message
+                    document.getElementById('successMessage').style.display = 'block';
+                    document.getElementById('errorMessage').style.display = 'none'; // Hide error message
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    // Show error message
+                    document.getElementById('errorMessage').style.display = 'block';
+                    document.getElementById('successMessage').style.display = 'none'; // Hide success message
+                });
+
+            // Save report to localStorage
+            const reports = getReports();
+            reports.push({ pollution_type: pollutionType, location, description, aqi, name, timestamp });
+            saveReports(reports);
+
+            // Re-render the reports
+            renderReports();
+
+            // Clear the form
+            document.getElementById('pollutionForm').reset();
+            aqiContainer.style.display = 'none'; // Hide AQI field after submission
+        });
+
+        // Initially render reports when the page loads
+        renderReports();
+    </script>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Water Quality Live Feed</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      /* background-color: #f0f8ff; */
+      background-image: url(image1.jpg);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      flex-direction: column;
+      color: #333;
+    }
+
+    .container {
+      width: 42%;
+      max-width: 1200px;
+      padding: 20px;
+      /* background-color: #ffffff; */
+      border-color: #333;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      margin-bottom: 40px;
+      animation: fadeIn 2s ease-in-out;
+    }
+
+    h1 {
+      text-align: center;
+      /* color: #006064; */
+      color: white  ;
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    #liveFeed {
+      margin-top: 20px;
+      width: 600px;
+      padding: 20px;
+      border-radius: 8px;
+      /* background-color: #f9f9f9; */
+      background-color: #333;
+      border: 1px solid #e0e0e0;
+      overflow-y: auto;
+      max-height: 500px;
+      animation: slideIn 1s ease;
+    }
+
+    .feed-item {
+      padding: 15px;
+      margin-bottom: 20px;
+      /* background-color: #fdfdfd; */
+      background-color: #333;
+      border-radius: 8px;
+      border-left: 5px solid #006064;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .feed-item:hover {
+      transform: scale(1.02);
+    }
+
+    .status {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    .location {
+      color: #666;
+      font-size: 1rem;
+      margin-top: 5px;
+    }
+
+    .parameter {
+      font-size: 0.95rem;
+      /* color: #999; */
+      color: white;
+      margin-top: 5px;
+    }
+
+    .time {
+      font-size: 1rem;
+      color: #00796b;
+      font-weight: bold;
+    }
+
+    .good {
+      color: #28a745;
+      /* Green */
+    }
+
+    .contaminated {
+      color: #dc3545;
+      /* Red */
+    }
+
+    .normal {
+      color: #ff9800;
+      /* Orange */
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(-100%);
+      }
+
+      to {
+        transform: translateX(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>Water Quality Live Feed</h1>
+    <div id="liveFeed">
+      <!-- Live feed content will be populated here -->
+    </div>
+  </div>
+
+  <script>
+    // Mapping of states and cities with simulated water quality data
+    const states = {
+      'Andhra Pradesh': ['Hyderabad', 'Vijayawada', 'Visakhapatnam'],
+      'Bihar': ['Patna', 'Gaya', 'Bhagalpur'],
+      'Goa': ['Panaji', 'Margao'],
+      'Gujarat': ['Ahmedabad', 'Surat', 'Vadodara'],
+      'Haryana': ['Chandigarh', 'Faridabad', 'Gurugram'],
+      'Himachal Pradesh': ['Shimla', 'Manali', 'Kullu'],
+      'Jharkhand': ['Ranchi', 'Jamshedpur', 'Dhanbad'],
+      'Karnataka': ['Bengaluru', 'Mysuru', 'Mangalore'],
+      'Kerala': ['Thiruvananthapuram', 'Kochi', 'Kozhikode'],
+      'Madhya Pradesh': ['Bhopal', 'Indore', 'Gwalior'],
+      'Maharashtra': ['Mumbai', 'Pune', 'Nagpur'],
+      'Manipur': ['Imphal'],
+      'Meghalaya': ['Shillong'],
+      'Mizoram': ['Aizawl'],
+      'Nagaland': ['Kohima'],
+      'Odisha': ['Bhubaneswar', 'Cuttack', 'Rourkela'],
+      'Punjab': ['Chandigarh', 'Amritsar', 'Ludhiana'],
+      'Rajasthan': ['Jaipur', 'Udaipur', 'Jodhpur'],
+      'Sikkim': ['Gangtok'],
+      'Tamil Nadu': ['Chennai', 'Coimbatore', 'Madurai'],
+      'Telangana': ['Hyderabad', 'Warangal', 'Khammam'],
+      'Tripura': ['Agartala'],
+      'Uttar Pradesh': ['Lucknow', 'Agra', 'Varanasi'],
+      'Uttarakhand': ['Dehradun', 'Haridwar'],
+      'West Bengal': ['Kolkata', 'Siliguri', 'Asansol']
+    };
+
+    // Simulate dynamic water quality data with different states and cities
+    const waterData = [
+      { status: 'Good water quality', class: 'good' },
+      { status: 'Normal water quality', class: 'normal' },
+      { status: 'Polluted water quality', class: 'contaminated' },
+      { status: 'Critical water quality', class: 'contaminated' }
+    ];
+
+    // Function to generate random data for water quality feeds
+    // function getRandomFeed() {
+    //   const stateKeys = Object.keys(states);
+    //   const randomState = stateKeys[Math.floor(Math.random() * stateKeys.length)];
+    //   const randomCity = states[randomState][Math.floor(Math.random() * states[randomState].length)];
+    //   const randomQuality = waterData[Math.floor(Math.random() * waterData.length)];`
+
+    //   return {
+    //     status: randomQuality.status,
+    //     location: ${randomCity}, ${randomState},
+    //     parameter: BOD: ${(Math.random() * 10).toFixed(2)}mg/L, DO: ${(Math.random() * 9 + 3).toFixed(2)}mg/L,
+    //     class: randomQuality.class
+    //   };
+    // }
+
+    // Function to generate random data for water quality feeds
+    function getRandomFeed() {
+      const stateKeys = Object.keys(states);
+      const randomState = stateKeys[Math.floor(Math.random() * stateKeys.length)];
+      const randomCity = states[randomState][Math.floor(Math.random() * states[randomState].length)];
+      const randomQuality = waterData[Math.floor(Math.random() * waterData.length)];
+
+      return {
+        status: randomQuality.status,
+        location: `${randomCity}, ${randomState}`, // Fixed string interpolation
+        parameter: `BOD: ${(Math.random() * 10).toFixed(2)}mg/L, DO: ${(Math.random() * 9 + 3).toFixed(2)}mg/L`, // Fixed string construction
+        class: randomQuality.class
+      };
+    }
+
+
+    // Function to load a new feed entry
+    function loadNewFeed() {
+      const liveFeedContainer = document.getElementById('liveFeed');
+      const item = getRandomFeed();
+      const feedItem = document.createElement('div');
+      feedItem.classList.add('feed-item');
+
+      // Get current IST time
+      const currentTime = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
+
+      // Add the appropriate class for good, contaminated, or normal water quality
+      feedItem.innerHTML = `
+        <div>
+          <div class="status ${item.class}">${item.status}</div>
+          <div class="location">Location: ${item.location}</div>
+          <div class="parameter">Water Quality: ${item.parameter}</div>
+        </div>
+        <div class="time">${currentTime}</div>
+      `;
+
+      liveFeedContainer.prepend(feedItem); // Add the new feed at the top of the list
+
+      // Limit the number of feeds to 50
+      const feedItems = liveFeedContainer.getElementsByClassName('feed-item');
+      if (feedItems.length > 50) {
+        liveFeedContainer.removeChild(feedItems[feedItems.length - 1]);
+      }
+    }
+
+    // Call the loadNewFeed function every 3 seconds to add a new feed
+    setInterval(loadNewFeed, 3000);
+
+    // Initial feed load
+    loadNewFeed();
+  </script>
+
+</body>
+
+</html>

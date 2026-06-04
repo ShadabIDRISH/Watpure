@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drinkable Water Finder and Live Feed</title>
+    <link rel="stylesheet" href="locationandfeed.css">
+    
+</head>
+<body>
+
+    <!-- Drinkable Water Finder Section -->
+    <section id="drinkable-water-finder">
+        <h1>Find Drinkable Water Nearby</h1>
+        <div id="map"></div>
+
+        <!-- Display selected location -->
+        <div id="locationInfo">
+            <p id="locationText">Select a location on the map to check water quality.</p>
+        </div>
+
+        <!-- Water Quality Feedback -->
+        <div id="feedback">
+            <p>Rate the water quality:</p>
+            <button onclick="submitFeedback(true)">Good</button>
+            <button onclick="submitFeedback(false)">Not Good</button>
+        </div>
+    </section>
+
+
+    <!-- Include the custom JavaScript before the Google Maps API to ensure initMap is defined -->
+    <script src="locationandfeed.js"></script>
+    
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUztteLtf7zjqfwJrC9njZ5Zb1-h3kMIY&callback=initMap&libraries=places"></script>
+  
+
+</body>
+</html>

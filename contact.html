@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - PURIFY</title>
+    <link rel="stylesheet" href="sttyle.css">
+</head>
+<body>
+    <section class="contact-section">
+        <!-- Main Heading -->
+        <header class="contact-header">
+            <h1>Contact Us</h1>
+            <p>We are here to assist you with all your water conservation or sanitation needs. Get in touch!</p>
+        </header>
+
+        <div class="contact-wrapper">
+            <!-- Contact Form -->
+            <div class="contact-form">
+                <h2>Send Us A Message</h2>
+                <form action="contact.php" method="POST">
+                    <input type="text" id="name" name="name" placeholder="Full Name" required>
+                    <input type="email" id="email" name="email" placeholder="Your Email" required>
+                    <textarea id="message" name="message" placeholder="Your Message" rows="6" required></textarea>
+                    <button type="submit" class="submit-btn">Send Message</button>
+                </form>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="contact-info">
+                <h2>Our Office</h2>
+                <p>214-Rajeev Chowk , Delhi </p>
+
+                <h3>Phone</h3>
+                <p>+123 456 7890</p>
+
+                <h3>Email</h3>
+                <p>support@watpure.com</p>
+            </div>
+        </div>
+
+        <!-- Map Section -->
+        <div class="map-section">
+            <h2>Find Us</h2>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14008.112327978213!2d77.20498719100077!3d28.628920445086386!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cfd35732ff587%3A0xb3489e0fc930becf!2sJanpath%20Market!5e0!3m2!1sen!2sin!4v1732382095056!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+    </section>
+ 
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - WATPURE</title>
+    <link rel="stylesheet" href="sttyle.css">
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #8ec5fc, #e0c3fc);
+            color: #333;
+        }
+
+        .main-navbar {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .main-navbar .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+            float: left;
+        }
+
+        .main-navbar .nav-links {
+            list-style: none;
+            float: right;
+        }
+
+        .main-navbar .nav-links li {
+            display: inline;
+            margin: 0 10px;
+        }
+
+        .main-navbar .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .main-navbar .nav-links a.active {
+            border-bottom: 2px solid #fff;
+        }
+
+        /* About Us Section */
+        .about-us {
+            padding: 50px 20px;
+            text-align: center;
+            animation: fadeIn 2s;
+        }
+
+        .about-us h1 {
+            font-size: 36px;
+            color: #444;
+            animation: slideIn 1.5s;
+        }
+
+        .about-us p {
+            font-size: 18px;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 20px auto;
+        }
+
+        .about-us ul {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+            max-width: 800px;
+            margin: 20px auto;
+        }
+
+        .about-us ul li {
+            padding: 5px 0;
+        }
+
+        /* Creative Background Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Water Droplet Animation */
+        .droplets {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .droplet {
+            position: absolute;
+            bottom: 0;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float 10s linear infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-120vh) scale(0.5);
+                opacity: 0;
+            }
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="main-navbar">
+        <div class="logo">WATPURE</div>
+        <ul class="nav-links">
+            <li><a href="indexx.html">Home</a></li>
+            <li><a href="about.html" class="active">About Us</a></li>
+            <li><a href="service.html">Services</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="info.html">Info</a></li>
+        </ul>
+    </nav>
+
+    <!-- Water Droplets Background Animation -->
+    <div class="droplets" id="droplets"></div>
+
+    <!-- About Us Section -->
+    <section class="about-us">
+        <div class="container">
+            <h1>About Us</h1>
+            <p>
+                At <strong>WATPURE</strong>, we are dedicated to promoting water conservation and ensuring access to clean and safe water for everyone. Our mission is to address global water challenges with innovative solutions that empower individuals and communities to manage water resources more effectively.
+            </p>
+            <h2>Our Vision</h2>
+            <p>
+                We envision a world where every drop of water is used wisely, where access to clean water is a universal right, and where technology and awareness lead to sustainable water practices.
+            </p>
+            <h2>Our Mission</h2>
+            <p>
+                Our mission is to:
+                <ul>
+                    <li>Educate communities about water conservation and its importance.</li>
+                    <li>Provide tools to monitor and manage daily water usage.</li>
+                    <li>Develop innovative solutions for water purification and distribution.</li>
+                </ul>
+            </p>
+            <h2>Why Choose Us?</h2>
+            <p>
+                - Innovative tools for water management.<br>
+                - Expertise in water conservation technologies.<br>
+                - Commitment to a sustainable future.<br>
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 WATPURE. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript for Droplet Animation -->
+    <script>
+        const droplets = document.getElementById('droplets');
+
+        function createDroplet() {
+            const droplet = document.createElement('div');
+            droplet.classList.add('droplet');
+            droplet.style.left = Math.random() * 100 + '%';
+            droplet.style.animationDuration = Math.random() * 5 + 5 + 's';
+            droplets.appendChild(droplet);
+
+            // Remove the droplet after animation
+            setTimeout(() => droplet.remove(), 10000);
+        }
+
+        // Generate droplets at intervals
+        setInterval(createDroplet, 500);
+    </script>
+</body>
+</html>
